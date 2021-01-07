@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import icon from '../assets/icon.svg';
+import Test from './Click';
 
 const Hello = () => {
   return (
@@ -42,6 +43,7 @@ const Hello = () => {
 export default function App() {
   return (
     <Router>
+      <Test />
       <Switch>
         <Route path="/" component={Hello} />
       </Switch>
