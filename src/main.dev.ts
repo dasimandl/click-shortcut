@@ -11,12 +11,12 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
-app.allowRendererProcessReuse = false
+app.allowRendererProcessReuse = false;
 
 export default class AppUpdater {
   constructor() {
@@ -93,6 +93,10 @@ const createWindow = async () => {
       mainWindow.show();
       mainWindow.focus();
     }
+    globalShortcut.register('CommandOrControl+1', () => {
+      console.log('CommandOrControl+X is pressed');
+      mainWindow.webContents.send('global-shortcut', 0);
+    });
   });
 
   mainWindow.on('closed', () => {

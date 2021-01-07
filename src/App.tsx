@@ -2,6 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import icon from '../assets/icon.svg';
 import Test from './Click';
+const { ipcRenderer } = window.require('electron');
+ipcRenderer.on('global-shortcut', (_event: any, response: Response) => {
+console.log("🚀 ~ file: App.tsx ~ line 7 ~ ipcRenderer.on ~ response", response)
+console.log("🚀 ~ file: App.tsx ~ line 7 ~ ipcRenderer.on ~ _event", _event)
+
+
+  console.log('received the shortcut');
+});
 
 const Hello = () => {
   return (
