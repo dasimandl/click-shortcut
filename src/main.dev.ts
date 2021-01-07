@@ -94,8 +94,20 @@ const createWindow = async () => {
       mainWindow.focus();
     }
     globalShortcut.register('CommandOrControl+1', () => {
-      console.log('CommandOrControl+X is pressed');
-      mainWindow.webContents.send('global-shortcut', 0);
+      console.log('CommandOrControl+1 is pressed');
+      mainWindow.webContents.send('global-shortcut', 1);
+    });
+    globalShortcut.register('CommandOrControl+2', () => {
+      console.log('CommandOrControl+2 is pressed');
+      mainWindow.webContents.send('global-shortcut', 2);
+    });
+    globalShortcut.register('CommandOrControl+3', () => {
+      console.log('CommandOrControl+3 is pressed');
+      mainWindow.webContents.send('global-shortcut', 3);
+    });
+    globalShortcut.register('CommandOrControl+4', () => {
+      console.log('CommandOrControl+4 is pressed');
+      mainWindow.webContents.send('global-shortcut', 4);
     });
   });
 
