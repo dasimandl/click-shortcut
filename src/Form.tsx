@@ -9,7 +9,6 @@ export default function Form({ getForm }) {
   const updateForm = (value: any, key: number) => {
     setForm((prevState) => {
       const newState = { ...prevState, [key]: value };
-      console.log('INSIDE HEREE SHDKFASKDNKNDKGNASDVNASDNAONSGONASDLGNASDLNALGNANGL')
       getForm(newState);
       return newState;
     });

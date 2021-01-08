@@ -15,6 +15,7 @@ import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+var robot = require('robotjs');
 
 app.allowRendererProcessReuse = false;
 
@@ -148,3 +149,39 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
 });
+let intervalId: any = null;
+app.on('get-cursor', () => {
+  globalShortcut.register('CommandOrControl+p', () => {
+    console.log('CommandOrControl+p is pressed');
+    console.log(
+      '🚀 ~ file: main.dev.ts ~ line 117 ~ globalShortcut.register ~ intervalId',
+      intervalId
+    );
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    } else {
+      intervalId = setInterval(() => {
+        const mouse = robot.getMousePos();
+        console.log(
+          '🚀 ~ file: main.dev.ts ~ line 119 ~ globalShortcut.register ~ mouse',
+          mouse
+        );
+      }, 1000);
+    }
+  });
+});
+app.on('stop-cursor', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow === null) createWindow();
+});
+
+const ioHook = require('iohook');
+
+ioHook.on('mousemove', event => {
+  console.log(event); // { type: 'mousemove', x: 700, y: 400 }
+});
+
+// Register and start hook
+ioHook.start();
