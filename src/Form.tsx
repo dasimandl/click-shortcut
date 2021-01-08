@@ -3,11 +3,16 @@ import FormInputs from './FormInputs';
 import Slider from '@material-ui/core/Slider';
 import { Typography } from '@material-ui/core';
 
-export default function Form() {
+export default function Form({ getForm }) {
   const [count, setCount] = useState(1);
   const [form, setForm] = useState({});
   const updateForm = (value: any, key: number) => {
-    setForm((prevState) => ({ ...prevState, [key]: value }));
+    setForm((prevState) => {
+      const newState = { ...prevState, [key]: value };
+      console.log('INSIDE HEREE SHDKFASKDNKNDKGNASDVNASDNAONSGONASDLGNASDLNALGNANGL')
+      getForm(newState);
+      return newState;
+    });
   };
   const updateCount = (event: any, value: number) => {
     setCount(() => value);
@@ -24,7 +29,7 @@ export default function Form() {
   return (
     <div>
       <Typography id="discrete-slider" gutterBottom>
-        Temperature
+        Pedals
       </Typography>
       <Slider
         defaultValue={1}
@@ -36,9 +41,9 @@ export default function Form() {
         max={10}
         onChange={updateCount}
       />
-      <div>Current State: {JSON.stringify(form)}</div>
 
       {createForm(count)}
+      <div>Current State: {JSON.stringify(form)}</div>
     </div>
   );
 }
