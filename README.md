@@ -7,6 +7,29 @@ npm i -D electron-rebuild
 npm install -g node-gyp
 npx electron-rebuild -f -t prod,optional,dev -w robotjs
 
+## iohook
+
+**NOTE:** This package is tightly coupled to the version of node and electron
+This might be a source of issue down the road
+"node-83" => node v14.15.4
+"electron-85" => 11.1.1
+
+
+In ./src/package.json
+"iohook": {
+    "targets": [
+      "node-83", 
+      "electron-85"
+    ],
+    "platforms": [
+      "win32",
+      "darwin",
+      "linux"
+    ],
+    "arches": [
+      "x64"
+    ]
+  }
 
 <img src=".erb/img/erb-banner.png" width="100%" />
 

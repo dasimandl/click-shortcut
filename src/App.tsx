@@ -24,9 +24,14 @@ const Hello = () => {
   ipcRenderer.on('global-shortcut', (_event: any, index: number) => {
     robotTest(index);
   });
+  const handleClick = () => {
+    console.log('GET ME THAT MOUSE');
+    ipcRenderer.send('GET_MOUSE_POSITION', 'GET_MOUSE_POSITION');
+  };
 
   return (
     <div>
+      <button onClick={() => handleClick()}>Get Mouse</button>
       <Form getForm={getForm} />
     </div>
   );

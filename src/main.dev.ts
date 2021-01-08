@@ -11,11 +11,12 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, globalShortcut } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 var robot = require('robotjs');
+const ioHook = require('iohook');
 
 app.allowRendererProcessReuse = false;
 
@@ -149,39 +150,18 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
 });
-let intervalId: any = null;
-app.on('get-cursor', () => {
-  globalShortcut.register('CommandOrControl+p', () => {
-    console.log('CommandOrControl+p is pressed');
-    console.log(
-      '🚀 ~ file: main.dev.ts ~ line 117 ~ globalShortcut.register ~ intervalId',
-      intervalId
-    );
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    } else {
-      intervalId = setInterval(() => {
-        const mouse = robot.getMousePos();
-        console.log(
-          '🚀 ~ file: main.dev.ts ~ line 119 ~ globalShortcut.register ~ mouse',
-          mouse
-        );
-      }, 1000);
-    }
-  });
-});
-app.on('stop-cursor', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow();
-});
-
-const ioHook = require('iohook');
-
-ioHook.on('mousemove', event => {
-  console.log(event); // { type: 'mousemove', x: 700, y: 400 }
-});
-
-// Register and start hook
 ioHook.start();
+let intervalId: any = null;
+const onMouseMove = (event) => {
+  console.log('MOVE', event); // { type: 'mousemove', x: 700, y: 400 }
+};
+const onMouseClick = (event) => {
+  console.log('CLICK', event); // { type: 'mousemove', x: 700, y: 400 }
+  ioHook.off('mousemove', onMouseMove);
+  ioHook.off('mouseclick', onMouseClick);
+};
+ipcMain.on('GET_MOUSE_POSITION', () => {
+  console.log('INSIDE GET_MOUSE_POSITION LISTENER');
+  ioHook.on('mousemove', onMouseMove);
+  ioHook.on('mouseclick', onMouseClick);
+});
