@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import FormInputs from './FormInputs';
 import Slider from '@material-ui/core/Slider';
 import { Typography } from '@material-ui/core';
+import FormInputs from './FormInputs';
 
 export default function Form({ getForm }) {
   const [count, setCount] = useState(1);
