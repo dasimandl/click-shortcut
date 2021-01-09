@@ -154,18 +154,27 @@ app.on('activate', () => {
   if (mainWindow === null) createWindow();
 });
 ioHook.start();
+let currentRowIndex: number | null;
+
 const onMouseMove = (event) => {
-  mainWindow?.webContents.send(IpcMessages.MOUSE_MOVED, event);
+  mainWindow?.webContents.send(IpcMessages.MOUSE_MOVED, {
+    index: currentRowIndex,
+    event,
+  });
   console.log('MOVE', event); // { type: 'mousemove', x: 700, y: 400 }
 };
-
 const onMouseClick = (event) => {
-  mainWindow?.webContents.send(IpcMessages.MOUSE_CLICKED, event);
+  mainWindow?.webContents.send(IpcMessages.MOUSE_CLICKED, {
+    index: currentRowIndex,
+    event,
+  });
+  currentRowIndex = null;
   console.log('CLICK', event); // { type: 'mousemove', x: 700, y: 400 }
   ioHook.off('mousemove', onMouseMove);
   ioHook.off('mouseclick', onMouseClick);
 };
-ipcMain.on('GET_MOUSE_POSITION', () => {
+ipcMain.on('GET_MOUSE_POSITION', (_event, index) => {
+  currentRowIndex = index;
   console.log('INSIDE GET_MOUSE_POSITION LISTENER');
   ioHook.on('mousemove', onMouseMove);
   ioHook.on('mouseclick', onMouseClick);
