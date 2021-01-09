@@ -24,7 +24,7 @@ export default function Form({ getForm }) {
 
   return (
     <div>
-      <Typography id="discrete-slider" gutterBottom>
+    <Typography id="discrete-slider" gutterBottom>
         Pedals
       </Typography>
       <Slider

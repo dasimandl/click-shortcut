@@ -98,22 +98,22 @@ const createWindow = async () => {
       mainWindow.show();
       mainWindow.focus();
     }
-    globalShortcut.register('CommandOrControl+1', () => {
-      console.log('CommandOrControl+1 is pressed');
-      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 0);
-    });
-    globalShortcut.register('CommandOrControl+2', () => {
-      console.log('CommandOrControl+2 is pressed');
-      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 1);
-    });
-    globalShortcut.register('CommandOrControl+3', () => {
-      console.log('CommandOrControl+3 is pressed');
-      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 2);
-    });
-    globalShortcut.register('CommandOrControl+4', () => {
-      console.log('CommandOrControl+4 is pressed');
-      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 3);
-    });
+    // globalShortcut.register('CommandOrControl+1', () => {
+    //   console.log('CommandOrControl+1 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 0);
+    // });
+    // globalShortcut.register('CommandOrControl+2', () => {
+    //   console.log('CommandOrControl+2 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 1);
+    // });
+    // globalShortcut.register('CommandOrControl+3', () => {
+    //   console.log('CommandOrControl+3 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 2);
+    // });
+    // globalShortcut.register('CommandOrControl+4', () => {
+    //   console.log('CommandOrControl+4 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 3);
+    // });
   });
 
   mainWindow.on('closed', () => {
@@ -141,6 +141,8 @@ const createWindow = async () => {
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
+  globalShortcut.unregisterAll();
+
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -178,4 +180,23 @@ ipcMain.on('GET_MOUSE_POSITION', (_event, index) => {
   console.log('INSIDE GET_MOUSE_POSITION LISTENER');
   ioHook.on('mousemove', onMouseMove);
   ioHook.on('mouseclick', onMouseClick);
+});
+ipcMain.on(IpcMessages.REGISTER_SHORTCUT, (_event, { shortcut, index }) => {
+  console.log(`REGISTERED SHORTCUT: ${shortcut} INDEX: ${index}`);
+  globalShortcut.register(shortcut, () => {
+    console.log(`SHORTCUT INVOKED: ${shortcut} INDEX: ${index}`);
+    mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, {
+      index,
+    });
+  });
+  mainWindow?.webContents.send(IpcMessages.REGISTER_SHORTCUT_SUCCESS, {
+    index,
+  });
+});
+ipcMain.on(IpcMessages.UNREGISTER_SHORTCUT, (_event, { shortcut, index }) => {
+  console.log(`UNREGISTERED SHORTCUT: ${shortcut} INDEX: ${index}`);
+  globalShortcut.unregister(shortcut);
+  mainWindow?.webContents.send(IpcMessages.UNREGISTER_SHORTCUT_SUCCESS, {
+    index,
+  });
 });

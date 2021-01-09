@@ -9,6 +9,9 @@ import { useDispatch } from 'react-redux';
 import FormShortcutDisplayInput from './FormShortcutDisplayInput';
 import { FormInput } from './shared/models/FormInput.model';
 import { updateMapping } from './store/reducers/shortcut-map-form.reducer';
+import { IpcMessages } from './shared/models/IpcMessages.model';
+
+const { ipcRenderer } = window.require('electron');
 
 export default function FormDialog({
   index,
@@ -19,6 +22,7 @@ export default function FormDialog({
 }) {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
+  // TODO: Move shortcut value into the global store
   const [currentShortcut, setCurrentShortcut] = useState('');
 
   const handleClickOpen = () => {
@@ -28,6 +32,21 @@ export default function FormDialog({
   const handleClose = () => {
     setOpen(false);
   };
+  const handleRegister = () => {
+    console.log('REGISTERING for INDEX:', index);
+    ipcRenderer.send(IpcMessages.REGISTER_SHORTCUT, {
+      shortcut: currentShortcut,
+      index,
+    });
+  };
+  const handleUnregister = (shortcut: string) => {
+    console.log('UNREGISTERING for INDEX:', index);
+    ipcRenderer.send(IpcMessages.UNREGISTER_SHORTCUT, {
+      shortcut,
+      index,
+    });
+  };
+
   const handleSubmit = () => {
     // This is a very specifc update reducer.  This should be expanded to allow an entire entity to be passed
     dispatch(
@@ -37,6 +56,7 @@ export default function FormDialog({
         value: currentShortcut,
       })
     );
+    handleRegister();
     handleClose();
   };
 
@@ -52,6 +72,7 @@ export default function FormDialog({
   };
 
   const handleDelete = () => {
+    handleUnregister(currentShortcut);
     setCurrentShortcut('');
     dispatch(
       updateMapping({

@@ -23,19 +23,23 @@ const Hello = () => {
   function robotTest(index: number) {
     if (mapping[index]) {
       const x = mapping[index][FormInput.x];
-      console.log('🚀 ~ file: App.tsx ~ line 25 ~ robotTest ~ x', x);
       const y = mapping[index][FormInput.y];
-      console.log('🚀 ~ file: App.tsx ~ line 27 ~ robotTest ~ y', y);
       if (x && y) {
         robot.moveMouse(x, y);
         robot.mouseClick();
       }
     }
   }
-  ipcRenderer.on(IpcMessages.GLOBAL_SHORTCUT, (_event: any, index: number) => {
-    console.log('🚀 ~ file: App.tsx ~ line 32 ~ ipcRenderer.on ~ index', index);
-    robotTest(index);
-  });
+  ipcRenderer.on(
+    IpcMessages.GLOBAL_SHORTCUT,
+    (_event: any, { index }: { index: number }) => {
+      console.log(
+        '🚀 ~ file: App.tsx ~ line 32 ~ ipcRenderer.on ~ index',
+        index
+      );
+      robotTest(index);
+    }
+  );
 
   return (
     <div>
