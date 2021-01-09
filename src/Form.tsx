@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import Slider from '@material-ui/core/Slider';
 import { Typography } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import FormInputs from './FormInputs';
 
 export default function Form({ getForm }) {
+  const mapping = useSelector((state) => state.mapping);
   const [count, setCount] = useState(1);
-  const [form, setForm] = useState({});
-  // const updateForm = (value: any, key: number) => {
-  //   setForm((prevState) => {
-  //     const newState = { ...prevState, [key]: value };
-  //     getForm(newState);
-  //     return newState;
-  //   });
-  // };
   const updateCount = (event: any, value: number) => {
     setCount(() => value);
   };
@@ -42,7 +36,7 @@ export default function Form({ getForm }) {
       />
 
       {createForm(count)}
-      <div>Current State: {JSON.stringify(form)}</div>
+      <div>Current State: {JSON.stringify(mapping)}</div>
     </div>
   );
 }

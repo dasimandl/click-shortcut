@@ -14,27 +14,17 @@ const initialState = {
 
 export default function FormInputs({ index }: { index: number }) {
   const dispatch = useDispatch();
-  const [state, setState] = useState(initialState);
   const updateState = (event: any) => {
     const { value, name } = event.target;
-    console.log(
-      '🚀 ~ file: FormInputs.tsx ~ line 19 ~ updateState ~ value, name ',
-      value,
-      name
-    );
     dispatch(updateMapping({ key: index, field: name, value }));
-    setState((prevState) => {
-      const newState = { ...prevState, [name]: value };
-      // updateForm(newState, index);
+    // setState((prevState) => {
+    //   const newState = { ...prevState, [name]: value };
+    //   // updateForm(newState, index);
 
-      return newState;
-    });
+    //   return newState;
+    // });
   };
-  const counter = useSelector((states) => states);
-  console.log(
-    '🚀 ~ file: FormInputs.tsx ~ line 29 ~ FormInputs ~ counter',
-    counter
-  );
+
 
   return (
     <div>
