@@ -32,7 +32,7 @@ const Hello = () => {
 
   return (
     <div>
-      <button onClick={() => handleClick()}>Get Mouse</button>
+      {/* <button onClick={() => handleClick()}>Get Mouse</button> */}
       <Form getForm={getForm} />
     </div>
   );
