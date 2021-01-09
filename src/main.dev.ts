@@ -15,6 +15,7 @@ import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+import { IpcMessages } from './shared/models/IpcMessages.model';
 
 const robot = require('robotjs');
 const ioHook = require('iohook');
@@ -154,9 +155,12 @@ app.on('activate', () => {
 });
 ioHook.start();
 const onMouseMove = (event) => {
+  mainWindow?.webContents.send(IpcMessages.MOUSE_MOVED, event);
   console.log('MOVE', event); // { type: 'mousemove', x: 700, y: 400 }
 };
+
 const onMouseClick = (event) => {
+  mainWindow?.webContents.send(IpcMessages.MOUSE_CLICKED, event);
   console.log('CLICK', event); // { type: 'mousemove', x: 700, y: 400 }
   ioHook.off('mousemove', onMouseMove);
   ioHook.off('mouseclick', onMouseClick);

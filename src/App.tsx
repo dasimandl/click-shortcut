@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Form from './Form';
-import { FormInput } from './shared/models/FormInput';
+import { FormInput } from './shared/models/FormInput.model';
 
 const robot = require('robotjs');
 

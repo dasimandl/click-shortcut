@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { TextField, Grid } from '@material-ui/core';
+import { TextField, Grid, Chip } from '@material-ui/core';
+import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import { useDispatch, useSelector } from 'react-redux';
-import { FormInput } from './shared/models/FormInput';
+import { FormInput } from './shared/models/FormInput.model';
 import * as actions from './store';
 import { updateMapping } from './store/reducers/shortcut-map-form.reducer';
+import { IpcMessages } from './shared/models/IpcMessages.model';
+
+const { ipcRenderer } = window.require('electron');
 
 const initialState = {
   [FormInput.name]: '',
@@ -14,17 +18,29 @@ const initialState = {
 
 export default function FormInputs({ index }: { index: number }) {
   const dispatch = useDispatch();
+  const rowMapping = useSelector((state) => state.mapping[index]);
   const updateState = (event: any) => {
     const { value, name } = event.target;
     dispatch(updateMapping({ key: index, field: name, value }));
-    // setState((prevState) => {
-    //   const newState = { ...prevState, [name]: value };
-    //   // updateForm(newState, index);
-
-    //   return newState;
-    // });
   };
+  // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_MOVED);
+  // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_CLICKED);
 
+  ipcRenderer.on(IpcMessages.MOUSE_CLICKED, (details) => {
+    console.log(
+      '🚀 ~ file: FormInputs.tsx ~ line 32 ~ ipcRenderer.on MOUSE_CLICKED ~ details',
+      details
+    );
+  });
+  ipcRenderer.on(IpcMessages.MOUSE_MOVED, (details) => {
+    console.log(
+      '🚀 ~ file: FormInputs.tsx ~ line 32 ~ ipcRenderer.on MOUSE_MOVED ~ details',
+      details
+    );
+  });
+  const handleLocationClick = () => {
+    ipcRenderer.send(IpcMessages.GET_MOUSE_POSITION);
+  };
 
   return (
     <div>
@@ -51,24 +67,13 @@ export default function FormInputs({ index }: { index: number }) {
             defaultValue=""
           />
         </Grid>
-        <Grid item xs={2}>
-          <TextField
-            onChange={updateState}
-            id="outlined-basic"
-            label="x"
-            name={FormInput.x}
-            variant="outlined"
-            defaultValue=""
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            onChange={updateState}
-            id="outlined-basic"
-            label="y"
-            name={FormInput.y}
-            variant="outlined"
-            defaultValue=""
+        <Grid item xs={4}>
+          <Chip
+            icon={<LocationSearchingIcon />}
+            label="Primary clickable"
+            clickable
+            color="primary"
+            onClick={handleLocationClick}
           />
         </Grid>
       </Grid>
