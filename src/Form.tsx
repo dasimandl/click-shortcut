@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import Slider from '@material-ui/core/Slider';
 import { Typography } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import FormInputs from './FormInputs';
+import { addEntity } from './store/reducers/shortcut-map-form.reducer';
 
 export default function Form({ getForm }) {
   const mapping = useSelector((state) => state.mapping);
+  const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const updateCount = (event: any, value: number) => {
     setCount(() => value);
+    dispatch(addEntity({ key: value }));
   };
 
   const createForm = (count: number) => {
