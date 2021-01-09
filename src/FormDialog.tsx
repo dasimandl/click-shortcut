@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDispatch } from 'react-redux';
+import FormShortcutDisplayInput from './FormShortcutDisplayInput';
+import { FormInput } from './shared/models/FormInput.model';
+import { updateMapping } from './store/reducers/shortcut-map-form.reducer';
 
 export default function FormDialog({
   index,
@@ -26,7 +28,17 @@ export default function FormDialog({
   const handleClose = () => {
     setOpen(false);
   };
-  const handleSubmit = (e) => {};
+  const handleSubmit = () => {
+    // This is a very specifc update reducer.  This should be expanded to allow an entire entity to be passed
+    dispatch(
+      updateMapping({
+        key: index,
+        field: FormInput.shortcut,
+        value: currentShortcut,
+      })
+    );
+    handleClose();
+  };
 
   const handleKeyDown = (e: KeyboardEvent) => {
     let { key } = e;
@@ -37,14 +49,9 @@ export default function FormDialog({
     setCurrentShortcut((prevState) =>
       prevState ? `${prevState}+${key}` : `${key}`
     );
-
-    console.log(
-      '🚀 ~ file: FormInputs.tsx ~ line 71 ~ handleKeyDown ~ key',
-      key
-    );
   };
 
-  const handleClear = () => {
+  const handleDelete = () => {
     setCurrentShortcut('');
   };
 
@@ -64,24 +71,17 @@ export default function FormDialog({
           <DialogContentText>
             Enter your keybord shortcut combination then click submit to set
           </DialogContentText>
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="shortcut"
-            type="email"
-            value={currentShortcut}
-            fullWidth
-          /> */}
-          <div>Current Shortcut: {currentShortcut}</div>
-          <button onClick={handleClear}>Clear</button>
+          <FormShortcutDisplayInput
+            currentShortcut={currentShortcut}
+            handleDelete={handleDelete}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
-            Subscribe
+          <Button onClick={handleSubmit} color="primary">
+            Save
           </Button>
         </DialogActions>
       </Dialog>

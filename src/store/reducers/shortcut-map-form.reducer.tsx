@@ -8,6 +8,8 @@ const mappingSlice = createSlice({
   name: 'mapping',
   initialState,
   reducers: {
+    // TODO: This is a very specifc update reducer.  This should be expanded to allow an entire entity to be passed
+
     updateMapping(state, action) {
       const {
         key,
