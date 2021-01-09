@@ -19,19 +19,14 @@ const initialState = {
 export default function FormInputs({ index }: { index: number }) {
   const dispatch = useDispatch();
   const rowMapping = useSelector((state) => state.mapping.entities[index]);
-  console.log(
-    '🚀 ~ file: FormInputs.tsx ~ line 22 ~ FormInputs ~ rowMapping',
-    rowMapping
-  );
   const updateState = (event: any) => {
     const { value, name } = event.target;
     dispatch(updateMapping({ key: index, field: name, value }));
   };
-  // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_MOVED);
-  // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_CLICKED);
-
   ipcRenderer.on(IpcMessages.MOUSE_CLICKED, (_event, payload) => {
     if (payload.index === index) {
+      // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_MOVED);
+      // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_CLICKED);
       dispatch(
         updateMapping({
           key: index,
@@ -47,28 +42,6 @@ export default function FormInputs({ index }: { index: number }) {
         })
       );
     }
-  });
-  ipcRenderer.on(IpcMessages.MOUSE_MOVED, (_event, payload) => {
-    // console.log(
-    //   '🚀 ~ file: FormInputs.tsx ~ line 48 ~ ipcRenderer.on ~ payload',
-    //   payload
-    // );
-    // if (payload.index === index) {
-    //   dispatch(
-    //     updateMapping({
-    //       key: index,
-    //       field: FormInput.x,
-    //       value: payload.event.x,
-    //     })
-    //   );
-    //   dispatch(
-    //     updateMapping({
-    //       key: index,
-    //       field: FormInput.y,
-    //       value: payload.event.y,
-    //     })
-    //   );
-    // }
   });
   const handleLocationClick = () => {
     ipcRenderer.send(IpcMessages.GET_MOUSE_POSITION, index);

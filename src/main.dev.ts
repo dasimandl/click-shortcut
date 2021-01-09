@@ -100,19 +100,19 @@ const createWindow = async () => {
     }
     globalShortcut.register('CommandOrControl+1', () => {
       console.log('CommandOrControl+1 is pressed');
-      mainWindow?.webContents.send('global-shortcut', 0);
+      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 0);
     });
     globalShortcut.register('CommandOrControl+2', () => {
       console.log('CommandOrControl+2 is pressed');
-      mainWindow?.webContents.send('global-shortcut', 1);
+      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 1);
     });
     globalShortcut.register('CommandOrControl+3', () => {
       console.log('CommandOrControl+3 is pressed');
-      mainWindow?.webContents.send('global-shortcut', 2);
+      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 2);
     });
     globalShortcut.register('CommandOrControl+4', () => {
       console.log('CommandOrControl+4 is pressed');
-      mainWindow?.webContents.send('global-shortcut', 3);
+      mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 3);
     });
   });
 
