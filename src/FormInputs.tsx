@@ -17,6 +17,7 @@ const initialState = {
 };
 
 export default function FormInputs({ index }: { index: number }) {
+  const [isTrackingMouse, setIsTrackingMouse] = useState(false);
   const dispatch = useDispatch();
   const rowMapping = useSelector((state) => state.mapping.entities[index]);
   const updateState = (event: any) => {
@@ -25,6 +26,7 @@ export default function FormInputs({ index }: { index: number }) {
   };
   ipcRenderer.on(IpcMessages.MOUSE_CLICKED, (_event, payload) => {
     if (payload.index === index) {
+      setIsTrackingMouse(!isTrackingMouse);
       // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_MOVED);
       // ipcRenderer.removeAllListeners(IpcMessages.MOUSE_CLICKED);
       dispatch(
@@ -44,7 +46,20 @@ export default function FormInputs({ index }: { index: number }) {
     }
   });
   const handleLocationClick = () => {
+    setIsTrackingMouse(!isTrackingMouse);
     ipcRenderer.send(IpcMessages.GET_MOUSE_POSITION, index);
+  };
+  const getChipLabel = () => {
+    console.log(
+      '🚀 ~ file: FormInputs.tsx ~ line 59 ~ getChipLabel ~ getChipLabel'
+    );
+
+    if (!rowMapping || !(rowMapping?.x && rowMapping?.y)) {
+      return 'Click to select coordinates';
+    }
+    const { x, y } = rowMapping;
+
+    return isTrackingMouse ? 'Click on screen to set' : `x: ${x} y: ${y}`;
   };
 
   return (
@@ -75,7 +90,7 @@ export default function FormInputs({ index }: { index: number }) {
         <Grid item xs={4}>
           <Chip
             icon={<LocationSearchingIcon />}
-            label={`x: ${rowMapping?.x} y: ${rowMapping?.y}`}
+            label={getChipLabel()}
             clickable
             color="primary"
             onClick={handleLocationClick}

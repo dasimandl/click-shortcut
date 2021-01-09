@@ -36,14 +36,9 @@ const Hello = () => {
     console.log('🚀 ~ file: App.tsx ~ line 32 ~ ipcRenderer.on ~ index', index);
     robotTest(index);
   });
-  const handleClick = () => {
-    console.log('GET ME THAT MOUSE');
-    ipcRenderer.send('GET_MOUSE_POSITION', 'GET_MOUSE_POSITION');
-  };
 
   return (
     <div>
-      {/* <button onClick={() => handleClick()}>Get Mouse</button> */}
       <Form getForm={getForm} />
     </div>
   );
