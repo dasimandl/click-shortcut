@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import icon from '../assets/icon.svg';
+import { useDispatch, useSelector } from 'react-redux';
 import Form from './Form';
 import { FormInput } from './shared/models/FormInput';
 
 const robot = require('robotjs');
+
 const { ipcRenderer } = window.require('electron');
 
 const Hello = () => {
+  const dispatch = useDispatch();
+  const mapping = useSelector((state) => state.mapping);
+  console.log('🚀 ~ file: App.tsx ~ line 13 ~ Hello ~ mapping', mapping);
+
   ipcRenderer.removeAllListeners('global-shortcut');
   const [state, setState]: [any, any] = useState({});
   const getForm = (form: any) => {

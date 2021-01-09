@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Grid } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import { FormInput } from './shared/models/FormInput';
+import * as actions from './store';
 
 const initialState = {
   [FormInput.name]: '',
@@ -9,23 +11,30 @@ const initialState = {
   [FormInput.y]: '',
 };
 
-export default function FormInputs({
-  updateForm,
-  index,
-}: {
-  updateForm: any;
-  index: number;
-}) {
+export default function FormInputs({ index }: { index: number }) {
+  const dispatch = useDispatch();
   const [state, setState] = useState(initialState);
   const updateState = (event: any) => {
     const { value, name } = event.target;
+    console.log(
+      '🚀 ~ file: FormInputs.tsx ~ line 19 ~ updateState ~ value, name ',
+      value,
+      name
+    );
+    dispatch(actions.updateMapping(index, value));
     setState((prevState) => {
       const newState = { ...prevState, [name]: value };
-      updateForm(newState, index);
+      // updateForm(newState, index);
 
       return newState;
     });
   };
+  const counter = useSelector((states) => states);
+  console.log(
+    '🚀 ~ file: FormInputs.tsx ~ line 29 ~ FormInputs ~ counter',
+    counter
+  );
+
   return (
     <div>
       <Grid container spacing={1}>

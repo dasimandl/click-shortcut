@@ -6,13 +6,13 @@ import FormInputs from './FormInputs';
 export default function Form({ getForm }) {
   const [count, setCount] = useState(1);
   const [form, setForm] = useState({});
-  const updateForm = (value: any, key: number) => {
-    setForm((prevState) => {
-      const newState = { ...prevState, [key]: value };
-      getForm(newState);
-      return newState;
-    });
-  };
+  // const updateForm = (value: any, key: number) => {
+  //   setForm((prevState) => {
+  //     const newState = { ...prevState, [key]: value };
+  //     getForm(newState);
+  //     return newState;
+  //   });
+  // };
   const updateCount = (event: any, value: number) => {
     setCount(() => value);
   };
@@ -20,7 +20,7 @@ export default function Form({ getForm }) {
   const createForm = (count: number) => {
     const rows = [];
     for (let i = 0; i < count; i++) {
-      rows.push(<FormInputs key={i} index={i} updateForm={updateForm} />);
+      rows.push(<FormInputs key={i} index={i} />);
     }
     return rows;
   };

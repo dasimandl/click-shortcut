@@ -15,7 +15,8 @@ import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-var robot = require('robotjs');
+
+const robot = require('robotjs');
 const ioHook = require('iohook');
 
 app.allowRendererProcessReuse = false;
@@ -45,13 +46,14 @@ if (
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
   return installer
     .default(
       extensions.map((name) => installer[name]),
       forceDownload
     )
+    .then((info) => console.log('INSTALLER', info))
     .catch(console.log);
 };
 
@@ -97,19 +99,19 @@ const createWindow = async () => {
     }
     globalShortcut.register('CommandOrControl+1', () => {
       console.log('CommandOrControl+1 is pressed');
-      mainWindow.webContents.send('global-shortcut', 0);
+      mainWindow?.webContents.send('global-shortcut', 0);
     });
     globalShortcut.register('CommandOrControl+2', () => {
       console.log('CommandOrControl+2 is pressed');
-      mainWindow.webContents.send('global-shortcut', 1);
+      mainWindow?.webContents.send('global-shortcut', 1);
     });
     globalShortcut.register('CommandOrControl+3', () => {
       console.log('CommandOrControl+3 is pressed');
-      mainWindow.webContents.send('global-shortcut', 2);
+      mainWindow?.webContents.send('global-shortcut', 2);
     });
     globalShortcut.register('CommandOrControl+4', () => {
       console.log('CommandOrControl+4 is pressed');
-      mainWindow.webContents.send('global-shortcut', 3);
+      mainWindow?.webContents.send('global-shortcut', 3);
     });
   });
 
@@ -151,7 +153,6 @@ app.on('activate', () => {
   if (mainWindow === null) createWindow();
 });
 ioHook.start();
-let intervalId: any = null;
 const onMouseMove = (event) => {
   console.log('MOVE', event); // { type: 'mousemove', x: 700, y: 400 }
 };

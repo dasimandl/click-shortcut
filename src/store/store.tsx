@@ -5,5 +5,6 @@ const store = configureStore({
   reducer: {
     mapping: shortcutMapReducer,
   },
+  devTools: true,
 });
 export default store;

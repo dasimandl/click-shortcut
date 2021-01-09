@@ -7,6 +7,15 @@ const mappingSlice = createSlice({
   initialState,
   reducers: {
     updateMapping(state, action) {
+      console.log(
+        '🚀 ~ file: shortcut-map-form.reducer.tsx ~ line 10 ~ updateMapping ~ action',
+        action
+      );
+      console.log(
+        '🚀 ~ file: shortcut-map-form.reducer.tsx ~ line 10 ~ updateMapping ~ state',
+        state
+      );
+
       const { key, value }: { key: string; value: any } = action.payload;
       state.entities[key] = value;
     },
