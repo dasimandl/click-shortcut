@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { TextField, Grid, Chip } from '@material-ui/core';
+import { TextField, Grid, Chip, Fab } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormInput } from './shared/models/FormInput.model';
 import * as actions from './store';
 import { updateMapping } from './store/reducers/shortcut-map-form.reducer';
 import { IpcMessages } from './shared/models/IpcMessages.model';
+import FormDialog from './FormDialog';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -62,6 +64,24 @@ export default function FormInputs({ index }: { index: number }) {
     return isTrackingMouse ? 'Click on screen to set' : `x: ${x} y: ${y}`;
   };
 
+  const getShortcutDialogButtonText = (): string => {
+    return rowMapping[FormInput.shortcut]
+      ? `${rowMapping[FormInput.shortcut]}`
+      : 'Set Shortcut';
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    let { key } = e;
+    const mapping: any = {
+      Meta: 'Command',
+    };
+    key = mapping[key] ? mapping[key] : key;
+    console.log(
+      '🚀 ~ file: FormInputs.tsx ~ line 71 ~ handleKeyDown ~ key',
+      key
+    );
+  };
+
   return (
     <div>
       <Grid container spacing={1}>
@@ -77,14 +97,9 @@ export default function FormInputs({ index }: { index: number }) {
           />
         </Grid>
         <Grid item xs={4}>
-          <TextField
-            onChange={updateState}
-            fullWidth
-            id="outlined-basic"
-            label="Shortcut"
-            name={FormInput.shortcut}
-            variant="outlined"
-            defaultValue=""
+          <FormDialog
+            index={index}
+            buttonText={getShortcutDialogButtonText()}
           />
         </Grid>
         <Grid item xs={4}>
