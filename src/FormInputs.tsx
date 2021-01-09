@@ -3,6 +3,7 @@ import { TextField, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormInput } from './shared/models/FormInput';
 import * as actions from './store';
+import { updateMapping } from './store/reducers/shortcut-map-form.reducer';
 
 const initialState = {
   [FormInput.name]: '',
@@ -21,7 +22,7 @@ export default function FormInputs({ index }: { index: number }) {
       value,
       name
     );
-    dispatch(actions.updateMapping(index, value));
+    dispatch(updateMapping({ key: index, field: name, value }));
     setState((prevState) => {
       const newState = { ...prevState, [name]: value };
       // updateForm(newState, index);

@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState: { entities: any } = { entities: {} };
+const initialState: { entities: any } = {
+  entities: { 0: {}, 1: {}, 2: {}, 3: {} },
+};
 
 const mappingSlice = createSlice({
   name: 'mapping',
@@ -16,8 +18,16 @@ const mappingSlice = createSlice({
         state
       );
 
-      const { key, value }: { key: string; value: any } = action.payload;
-      state.entities[key] = value;
+      const {
+        key,
+        value,
+        field,
+      }: { key: string; value: any; field: any } = action.payload;
+      state.entities[key][field] = value;
+      console.log(
+        '🚀 ~ file: shortcut-map-form.reducer.tsx ~ line 21 ~ updateMapping ~ state.entities',
+        state.entities
+      );
     },
   },
 });
