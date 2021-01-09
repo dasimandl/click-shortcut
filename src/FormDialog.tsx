@@ -53,6 +53,13 @@ export default function FormDialog({
 
   const handleDelete = () => {
     setCurrentShortcut('');
+    dispatch(
+      updateMapping({
+        key: index,
+        field: FormInput.shortcut,
+        value: '',
+      })
+    );
   };
 
   return (
