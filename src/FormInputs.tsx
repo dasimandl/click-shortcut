@@ -65,7 +65,7 @@ export default function FormInputs({ index }: { index: number }) {
   };
 
   const getShortcutDialogButtonText = (): string => {
-    return rowMapping[FormInput.shortcut]
+    return rowMapping && rowMapping[FormInput.shortcut]
       ? `${rowMapping[FormInput.shortcut]}`
       : 'Set Shortcut';
   };
