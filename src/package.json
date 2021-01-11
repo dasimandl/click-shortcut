@@ -15,6 +15,25 @@
   },
   "license": "MIT",
   "dependencies": {
+    "iohook": "^0.7.2",
+    "redux-devtools-extension": "^2.13.8",
     "robotjs": "^0.6.0"
+  },
+  "iohook": {
+    "targets": [
+      "node-83",
+      "electron-85"
+    ],
+    "platforms": [
+      "win32",
+      "darwin",
+      "linux"
+    ],
+    "arches": [
+      "x64"
+    ]
+  },
+  "devDependencies": {
+    "@types/react-redux": "^7.1.15"
   }
 }

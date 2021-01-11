@@ -11,12 +11,16 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+import { IpcMessages } from './shared/models/IpcMessages.model';
 
-app.allowRendererProcessReuse = false
+const robot = require('robotjs');
+const ioHook = require('iohook');
+
+app.allowRendererProcessReuse = false;
 
 export default class AppUpdater {
   constructor() {
@@ -43,13 +47,14 @@ if (
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
   return installer
     .default(
       extensions.map((name) => installer[name]),
       forceDownload
     )
+    .then((info) => console.log('INSTALLER', info))
     .catch(console.log);
 };
 
@@ -93,6 +98,22 @@ const createWindow = async () => {
       mainWindow.show();
       mainWindow.focus();
     }
+    // globalShortcut.register('CommandOrControl+1', () => {
+    //   console.log('CommandOrControl+1 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 0);
+    // });
+    // globalShortcut.register('CommandOrControl+2', () => {
+    //   console.log('CommandOrControl+2 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 1);
+    // });
+    // globalShortcut.register('CommandOrControl+3', () => {
+    //   console.log('CommandOrControl+3 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 2);
+    // });
+    // globalShortcut.register('CommandOrControl+4', () => {
+    //   console.log('CommandOrControl+4 is pressed');
+    //   mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, 3);
+    // });
   });
 
   mainWindow.on('closed', () => {
@@ -120,6 +141,8 @@ const createWindow = async () => {
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
+  globalShortcut.unregisterAll();
+
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -131,4 +154,49 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
+});
+ioHook.start();
+let currentRowIndex: number | null;
+
+const onMouseMove = (event) => {
+  mainWindow?.webContents.send(IpcMessages.MOUSE_MOVED, {
+    index: currentRowIndex,
+    event,
+  });
+  console.log('MOVE', event); // { type: 'mousemove', x: 700, y: 400 }
+};
+const onMouseClick = (event) => {
+  mainWindow?.webContents.send(IpcMessages.MOUSE_CLICKED, {
+    index: currentRowIndex,
+    event,
+  });
+  currentRowIndex = null;
+  console.log('CLICK', event); // { type: 'mousemove', x: 700, y: 400 }
+  ioHook.off('mousemove', onMouseMove);
+  ioHook.off('mouseclick', onMouseClick);
+};
+ipcMain.on('GET_MOUSE_POSITION', (_event, index) => {
+  currentRowIndex = index;
+  console.log('INSIDE GET_MOUSE_POSITION LISTENER');
+  ioHook.on('mousemove', onMouseMove);
+  ioHook.on('mouseclick', onMouseClick);
+});
+ipcMain.on(IpcMessages.REGISTER_SHORTCUT, (_event, { shortcut, index }) => {
+  console.log(`REGISTERED SHORTCUT: ${shortcut} INDEX: ${index}`);
+  globalShortcut.register(shortcut, () => {
+    console.log(`SHORTCUT INVOKED: ${shortcut} INDEX: ${index}`);
+    mainWindow?.webContents.send(IpcMessages.GLOBAL_SHORTCUT, {
+      index,
+    });
+  });
+  mainWindow?.webContents.send(IpcMessages.REGISTER_SHORTCUT_SUCCESS, {
+    index,
+  });
+});
+ipcMain.on(IpcMessages.UNREGISTER_SHORTCUT, (_event, { shortcut, index }) => {
+  console.log(`UNREGISTERED SHORTCUT: ${shortcut} INDEX: ${index}`);
+  globalShortcut.unregister(shortcut);
+  mainWindow?.webContents.send(IpcMessages.UNREGISTER_SHORTCUT_SUCCESS, {
+    index,
+  });
 });

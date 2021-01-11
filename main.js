@@ -8,7 +8,7 @@ require('electron-reload')(__dirname, {
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 800,
+        width: 1000,
         height: 600,
         webPreferences: {
             nodeIntegration: true
@@ -33,19 +33,4 @@ app.on('activate', () => {
 })
 
 
-// Move the mouse across the screen as a sine wave.
-var robot = require("robotjs");
 
-// Speed up the mouse.
-robot.setMouseDelay(2);
-
-var twoPI = Math.PI * 2.0;
-var screenSize = robot.getScreenSize();
-var height = (screenSize.height / 2) - 10;
-var width = screenSize.width;
-
-for (var x = 0; x < width; x++)
-{
-	y = height * Math.sin((twoPI * x) / width) + height;
-	robot.moveMouse(x, y);
-}

@@ -1,41 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import icon from '../assets/icon.svg';
-import Test from './Click';
+import { useDispatch, useSelector } from 'react-redux';
+import Form from './Form';
+import { FormInput } from './shared/models/FormInput.model';
+import { IpcMessages } from './shared/models/IpcMessages.model';
+
+const robot = require('robotjs');
+
+const { ipcRenderer } = window.require('electron');
 
 const Hello = () => {
+  const dispatch = useDispatch();
+  const mapping = useSelector((state) => state.mapping.entities);
+  console.log('🚀 ~ file: App.tsx ~ line 15 ~ Hello ~ mapping', mapping);
+
+  ipcRenderer.removeAllListeners(IpcMessages.GLOBAL_SHORTCUT);
+  const [state, setState]: [any, any] = useState({});
+  const getForm = (form: any) => {
+    setState(() => form);
+  };
+
+  function robotTest(index: number) {
+    if (mapping[index]) {
+      const x = mapping[index][FormInput.x];
+      const y = mapping[index][FormInput.y];
+      if (x && y) {
+        robot.moveMouse(x, y);
+        robot.mouseClick();
+      }
+    }
+  }
+  ipcRenderer.on(
+    IpcMessages.GLOBAL_SHORTCUT,
+    (_event: any, { index }: { index: number }) => {
+      console.log(
+        '🚀 ~ file: App.tsx ~ line 32 ~ ipcRenderer.on ~ index',
+        index
+      );
+      robotTest(index);
+    }
+  );
+
   return (
     <div>
-      <div className="Hello">
-        <img width="200px" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+      <Form getForm={getForm} />
     </div>
   );
 };
@@ -43,7 +51,6 @@ const Hello = () => {
 export default function App() {
   return (
     <Router>
-      <Test />
       <Switch>
         <Route path="/" component={Hello} />
       </Switch>
